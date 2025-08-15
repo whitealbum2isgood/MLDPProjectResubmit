@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import numpy as np
+import pandas as pd
 
 st.set_page_config(page_title="App Rating Predictor", layout="centered")
 
@@ -61,9 +62,14 @@ type_encoded = [1] if app_type == 'Paid' else [0]
 
 input_data = np.array([[reviews, price, size, installs] + category_encoded + genre_encoded + content_rating_encoded + type_encoded])
 
+
+feature_names = ['Reviews', 'Price', 'Size', 'Installs'] + all_categories + all_genres + all_content_ratings + ['Type_Paid']
+input_df = pd.DataFrame([[reviews, price, size, installs] + category_encoded + genre_encoded + content_rating_encoded + type_encoded],
+                        columns=feature_names)
+
 st.markdown("---")
 if st.button("Predict Rating"):
-    prediction = model.predict(input_data)
+    prediction = model.predict(input_df)
     st.success(f"⭐ Predicted Rating: **{prediction[0]:.2f} / 5.0**")
 
 st.markdown("---")
